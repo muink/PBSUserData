@@ -8,10 +8,10 @@
 :Init
 cd /d %~dp0
 call .\MakeInit.cmd "%~dp0"
-set "CURRENTPROFILE=%UserProfile%\test"
+set "CURRENTPROFILE=%UserProfile%"
 set "CURRENTDEVICE=%~d0"
 set "LASTDEVICE=%~d0"
-set "LASTDEVFILE=%~dp0%CURRENTPC%\%CURRENTUSER%.%CURRENTPC%.dev"
+set "LASTDEVFILE=%~dp0%CURRENTPC%\%CURRENTUSER%.dev"
 for /f "delims=" %%i in ('type "%LASTDEVFILE%" 2^>nul') do set "LASTDEVICE=%%~i"
 
 set "ERRORLOG=%~dp0%CURRENTPC%\%CURRENTUSER%.Error.log"
@@ -29,7 +29,7 @@ echo.%~d0>"%~dp0%CURRENTPC%\%CURRENTUSER%.dev"
 if %ERRORCOUNT% gtr 0 (
 	echo.%ERRORCOUNT% errors have occurred and the error log will be opened for you...
 	ping -n 5 127.0.0.1 >nul
-	notepad "%LASTDEVFILE%"
+	notepad "%ERRORLOG%"
 )
 goto :eof
 
@@ -45,12 +45,15 @@ for /f "delims=" %%i in ('dir /a /b') do (
 				for /f "tokens=2 delims=[]" %%l in ('dir /al "%~2\%%~i\.." 2^>nul^|findstr /r "<SYMLINKD*>\ [ ]*%%~i"') do (
 					if not "%%~l" == "%CD%\%%~i" (
 						if "%%~l" == "%LASTDEVICE%%~pn1\%%~i" (
-							dir /ad /b "%%~i" >nul 2>nul && (
-								rd /q "%~2\%%~i" >nul 2>nul
-								mklink /d "%~2\%%~i" "%CD%\%%~i"
-							) || (
-								del /f /q "%~2\%%~i" >nul 2>nul
-								mklink "%~2\%%~i" "%CD%\%%~i"
+							for /f "tokens=2 delims=<>" %%n in ('dir /al "%~2\%%~i\.." 2^>nul^|findstr /r "<SYMLINKD*>\ [ ]*%%~i"') do (
+								if "%%~n" == "SYMLINKD" (
+									rd /q "%~2\%%~i" >nul 2>nul
+									mklink /d "%~2\%%~i" "%CD%\%%~i"
+								)
+								if "%%~n" == "SYMLINK" (
+									del /f /q "%~2\%%~i" >nul 2>nul
+									mklink "%~2\%%~i" "%CD%\%%~i"
+								)
 							)
 						) else echo."%~2\%%~i" is linked to another location, Unable to create link...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
 					)
