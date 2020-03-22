@@ -42,10 +42,10 @@ for /f "delims=" %%i in ('dir /a /b') do (
 	echo."%%~i"|findstr /v "%~3" >nul && (
 		if exist "%~2\%%~i" (
 			dir /al "%~2\%%~i\.." 2>nul|findstr /r "<SYMLINKD*>\ [ ]*%%~i" >nul && (
-				for /f "tokens=2 delims=[]" %%l in ('dir /al "%~2\%%~i\.." 2^>nul^|findstr /r "<SYMLINKD*>\ [ ]*%%~i"') do (
+				for /f "tokens=2 delims=[]" %%l in ('dir /al "%~2\%%~i\.." 2^>nul^|findstr /r /c:"<SYMLINKD*>  *%%~i"') do (
 					if not "%%~l" == "%CD%\%%~i" (
 						if "%%~l" == "%LASTDEVICE%%~pn1\%%~i" (
-							for /f "tokens=2 delims=<>" %%n in ('dir /al "%~2\%%~i\.." 2^>nul^|findstr /r "<SYMLINKD*>\ [ ]*%%~i"') do (
+							for /f "tokens=2 delims=<>" %%n in ('dir /al "%~2\%%~i\.." 2^>nul^|findstr /r /c:"<SYMLINKD*>  *%%~i"') do (
 								if "%%~n" == "SYMLINKD" (
 									rd /q "%~2\%%~i" >nul 2>nul
 									mklink /d "%~2\%%~i" "%CD%\%%~i"
