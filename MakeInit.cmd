@@ -10,7 +10,7 @@ pushd %~1 2>nul
 set "CURRENTPC=%UserDomain%"
 set "CURRENTUSER=%UserName%"
 
-set "PRESET=Contacts:Desktop:Documents:Downloads:Favorites:Links:Music:Pictures:Saved Games:Searches:Videos"
+set "PRESET=Contacts:Documents:Downloads:Favorites:Links:Music:Pictures:Saved Games:Searches:Videos"
 
 
 :--pcname--
@@ -20,7 +20,7 @@ pushd "%CURRENTPC%"
 popd
 
 :--username--
-md "%CURRENTPC%\%CURRENTUSER%" 2>nul || goto :--appdata--
+md "%CURRENTPC%\%CURRENTUSER%" 2>nul || goto :--desktop--
 pushd "%CURRENTPC%\%CURRENTUSER%"
 call:[WTini] "%CD%" imageres.dll 207
 setlocal enabledelayedexpansion
@@ -31,6 +31,12 @@ for /f "tokens=1* delims=:" %%i in ("!PRESET!") do (
 	goto :--username--#loop
 )
 endlocal
+popd
+
+:--desktop--
+md "%CURRENTPC%\%CURRENTUSER%\Desktop" 2>nul || goto :--appdata--
+pushd "%CURRENTPC%\%CURRENTUSER%\Desktop"
+call:[WTini] "%CD%" imageres.dll 174
 popd
 
 :--appdata--
