@@ -22,7 +22,8 @@ set /a ERRORCOUNT=0
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%" "%CURRENTPROFILE%" "desktop.ini AppData"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Local" "%CURRENTPROFILE%\AppData\Local" "desktop.ini"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\LocalLow" "%CURRENTPROFILE%\AppData\LocalLow" "desktop.ini"
-call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming" "%CURRENTPROFILE%\AppData\Roaming" "desktop.ini"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming" "%CURRENTPROFILE%\AppData\Roaming" "desktop.ini Microsoft"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Roaming\Microsoft\Windows" "desktop.ini"
 echo.%~d0>"%~dp0%CURRENTPC%\%CURRENTUSER%.dev"
 
 

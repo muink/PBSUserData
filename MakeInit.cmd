@@ -40,7 +40,7 @@ call:[WTini] "%CD%" imageres.dll 174
 popd
 
 :--appdata--
-md "%CURRENTPC%\%CURRENTUSER%\AppData" 2>nul || goto :--template--
+md "%CURRENTPC%\%CURRENTUSER%\AppData" 2>nul || goto :--microsoft--
 pushd "%CURRENTPC%\%CURRENTUSER%\AppData"
 call:[WTini] "%CD%" "" 69
 setlocal enabledelayedexpansion
@@ -51,6 +51,30 @@ for /f "tokens=1* delims=:" %%i in ("!PRESET!") do (
 	call:[WTini] "%CD%\%%~i" "" 69
 	set "PRESET=%%j"
 	goto :--appdata--#loop
+)
+endlocal
+popd
+
+:--microsoft--
+md "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft" 2>nul || goto :--windows--
+pushd "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft"
+call:[WTini] "%CD%" "" 69
+popd
+
+:--windows--
+md "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" 2>nul || goto :--template--
+pushd "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows"
+call:[WTini] "%CD%" "" 69
+setlocal enabledelayedexpansion
+set "PRESET=Network Shortcuts=imageres.dll,28:Printer Shortcuts=imageres.dll,48:SendTo=imageres.dll,176:Themes=themeui.dll,0"
+:--windows--#loop
+for /f "tokens=1* delims=:" %%i in ("!PRESET!") do (
+	for /f "tokens=1* delims==" %%n in ("%%~i") do (
+		md "%%~n" 2>nul
+		for /f "tokens=1-2 delims=," %%p in ("%%~o") do call:[WTini] "%CD%\%%~n" %%~p %%~q
+	)
+	set "PRESET=%%j"
+	goto :--windows--#loop
 )
 endlocal
 popd
