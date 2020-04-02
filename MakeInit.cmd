@@ -40,7 +40,7 @@ call:[WTini] "%CD%" imageres.dll 174
 popd
 
 :--appdata--
-md "%CURRENTPC%\%CURRENTUSER%\AppData" 2>nul || goto :--microsoft--
+md "%CURRENTPC%\%CURRENTUSER%\AppData" 2>nul || goto :--local--
 pushd "%CURRENTPC%\%CURRENTUSER%\AppData"
 call:[WTini] "%CD%" "" 69
 setlocal enabledelayedexpansion
@@ -55,23 +55,42 @@ for /f "tokens=1* delims=:" %%i in ("!PRESET!") do (
 endlocal
 popd
 
-:--microsoft--
-md "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft" 2>nul || goto :--windows--
+:--local--
+md "%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft" 2>nul || goto :--local2--
+pushd "%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft"
+call:[WTini] "%CD%" "" 69
+popd
+:--local2--
+md "%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft\Windows" 2>nul || goto :--roaming--
+pushd "%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft\Windows"
+call:[WTini] "%CD%" "" 69
+setlocal enabledelayedexpansion
+set "KEY=Themes=themeui.dll:0"
+:--local2--#loop
+for /f "tokens=1* delims=;" %%i in ("!KEY!") do (
+	for /f "tokens=1,2 delims==" %%k in ("%%i") do call:[MKKEY] "%CD%" "%%~k" "%%~l"
+	set "KEY=%%j"
+	goto :--local2--#loop
+)
+endlocal
+popd
+
+:--roaming--
+md "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft" 2>nul || goto :--roaming2--
 pushd "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft"
 call:[WTini] "%CD%" "" 69
 popd
-
-:--windows--
+:--roaming2--
 md "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" 2>nul || goto :--template--
 pushd "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows"
 call:[WTini] "%CD%" "" 69
 setlocal enabledelayedexpansion
 set "KEY=Network Shortcuts=imageres.dll:28;Printer Shortcuts=imageres.dll:48;SendTo=imageres.dll:176;Themes=themeui.dll:0"
-:--windows--#loop
+:--roaming2--#loop
 for /f "tokens=1* delims=;" %%i in ("!KEY!") do (
 	for /f "tokens=1,2 delims==" %%k in ("%%i") do call:[MKKEY] "%CD%" "%%~k" "%%~l"
 	set "KEY=%%j"
-	goto :--windows--#loop
+	goto :--roaming2--#loop
 )
 endlocal
 popd

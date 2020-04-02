@@ -20,10 +20,11 @@ set /a ERRORCOUNT=0
 
 :Gen_Links
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%" "%CURRENTPROFILE%" "desktop.ini AppData"
-call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Local" "%CURRENTPROFILE%\AppData\Local" "desktop.ini"
-call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\LocalLow" "%CURRENTPROFILE%\AppData\LocalLow" "desktop.ini"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Local" "%CURRENTPROFILE%\AppData\Local" "desktop.ini Microsoft"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\LocalLow" "%CURRENTPROFILE%\AppData\LocalLow" "desktop.ini Microsoft"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming" "%CURRENTPROFILE%\AppData\Roaming" "desktop.ini Microsoft"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Roaming\Microsoft\Windows" "desktop.ini"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Local\Microsoft\Windows" "desktop.ini"
 echo.%~d0>"%~dp0%CURRENTPC%\%CURRENTUSER%.dev"
 
 
@@ -56,10 +57,10 @@ for /f "delims=" %%i in ('dir /a /b') do (
 									mklink "%~2\%%~i" "%CD%\%%~i"
 								)
 							)
-						) else echo."%~2\%%~i" is linked to another location, Unable to create link...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
+						) else echo."%~2\%%~i" is linked to another location, Unable to create symlink...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
 					)
 				)
-			) || echo."%~2\%%~i" is exist, Unable to create link...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
+			) || echo."%~2\%%~i" is exist, Unable to create symlink...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
 		) else dir /ad /b "%%~i" >nul 2>nul && mklink /d "%~2\%%~i" "%CD%\%%~i" || mklink "%~2\%%~i" "%CD%\%%~i"
 	)
 )
