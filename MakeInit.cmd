@@ -34,9 +34,25 @@ endlocal
 popd
 
 :--desktop--
-md "%CURRENTPC%\%CURRENTUSER%\Desktop" 2>nul || goto :--appdata--
+md "%CURRENTPC%\%CURRENTUSER%\Desktop" 2>nul || goto :--game--
 pushd "%CURRENTPC%\%CURRENTUSER%\Desktop"
 call:[WTini] "%CD%" imageres.dll 174
+popd
+
+:--game--
+md "%CURRENTPC%\%CURRENTUSER%\Game" 2>nul || goto :--appdata--
+pushd "%CURRENTPC%\%CURRENTUSER%\Game"
+call:[WTini] "%CD%" "imageres.dll" -186
+setlocal enabledelayedexpansion
+set "PRESET=Local:LocalLow:Roaming"
+:--game--#loop
+for /f "tokens=1* delims=:" %%i in ("!PRESET!") do (
+	md "%%~i" 2>nul
+	call:[WTini] "%CD%\%%~i" "" 69
+	set "PRESET=%%j"
+	goto :--game--#loop
+)
+endlocal
 popd
 
 :--appdata--

@@ -19,7 +19,10 @@ null>"%ERRORLOG%" 2>nul
 set /a ERRORCOUNT=0
 
 :Gen_Links
-call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%" "%CURRENTPROFILE%" "desktop.ini AppData"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%" "%CURRENTPROFILE%" "desktop.ini AppData Game"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\Game\Local" "%CURRENTPROFILE%\AppData\Local" "desktop.ini"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\Game\LocalLow" "%CURRENTPROFILE%\AppData\LocalLow" "desktop.ini"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\Game\Roaming" "%CURRENTPROFILE%\AppData\Roaming" "desktop.ini"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Local" "%CURRENTPROFILE%\AppData\Local" "desktop.ini Microsoft"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\LocalLow" "%CURRENTPROFILE%\AppData\LocalLow" "desktop.ini Microsoft"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming" "%CURRENTPROFILE%\AppData\Roaming" "desktop.ini Microsoft"
