@@ -11,10 +11,10 @@ call .\MakeInit.cmd "%~dp0"
 set "CURRENTPROFILE=%UserProfile%"
 set "CURRENTDEVICE=%~d0"
 set "LASTDEVICE=%~d0"
-set "LASTDEVFILE=%~dp0%CURRENTPC%\%CURRENTUSER%.dev"
+set "LASTDEVFILE=%~dp0%CURRENTPC%\%CURRENTUSER%.drv"
 for /f "delims=" %%i in ('type "%LASTDEVFILE%" 2^>nul') do set "LASTDEVICE=%%~i"
 
-set "ERRORLOG=%~dp0%CURRENTPC%\%CURRENTUSER%.Error.log"
+set "ERRORLOG=%~dp0%CURRENTPC%\%USERNAME%.Error.log"
 null>"%ERRORLOG%" 2>nul
 set /a ERRORCOUNT=0
 
@@ -28,7 +28,8 @@ call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\LocalLow" "%CURRENTPROFI
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming" "%CURRENTPROFILE%\AppData\Roaming" "desktop.ini Microsoft"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Roaming\Microsoft\Windows" "desktop.ini"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Local\Microsoft\Windows" "desktop.ini"
-echo.%~d0>"%~dp0%CURRENTPC%\%CURRENTUSER%.dev"
+echo.%~d0>"%~dp0%CURRENTPC%\%CURRENTUSER%.drv"
+attrib +s +h "%~dp0%CURRENTPC%\%CURRENTUSER%.drv" 2>nul
 
 
 if %ERRORCOUNT% gtr 0 (

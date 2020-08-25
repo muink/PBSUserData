@@ -7,8 +7,25 @@ if "%~1" == "" exit
 
 pushd %~1 2>nul
 :--init--
-set "CURRENTPC=%UserDomain%"
-set "CURRENTUSER=%UserName%"
+set "USERDOMAIN=%UserDomain%"
+set "USERNAME=%UserName%"
+rem MachineGUID
+for /f "delims=" %%i in ('reg query HKLM\SOFTWARE\Microsoft\Cryptography /v MachineGuid 2^>nul') do (
+    for /f "delims=" %%o in ('echo %%i ^| find /i "MachineGuid"') do (
+        for /f "tokens=3 delims= " %%p in ("%%o") do (
+            set "CURRENTPC=%%p"
+        )
+    )
+)
+rem dmi info
+rem wmic csproduct get UUIDs
+for /f "delims=" %%i in ('whoami /user /fo list 2^>nul') do (
+    for /f "delims=" %%o in ('echo %%i ^| find /i "SID:"') do (
+        for /f "tokens=2 delims= " %%p in ("%%o") do (
+            set "CURRENTUSER=%%p"
+        )
+    )
+)
 
 set "PRESET=Contacts:Documents:Downloads:Favorites:Links:Music:Pictures:Saved Games:Searches:Videos"
 
@@ -16,13 +33,13 @@ set "PRESET=Contacts:Documents:Downloads:Favorites:Links:Music:Pictures:Saved Ga
 :--pcname--
 md "%CURRENTPC%" 2>nul || goto :--username--
 pushd "%CURRENTPC%"
-	call:[WTini] "%CD%" "" 15
+	call:[WTini] "%CD%" "" 15 "%USERDOMAIN%"
 popd
 
 :--username--
 md "%CURRENTPC%\%CURRENTUSER%" 2>nul || goto :--desktop--
 pushd "%CURRENTPC%\%CURRENTUSER%"
-call:[WTini] "%CD%" imageres.dll 207
+call:[WTini] "%CD%" imageres.dll 207 "%USERNAME%"
 setlocal enabledelayedexpansion
 :--username--#loop
 for /f "tokens=1* delims=:" %%i in ("!PRESET!") do (
@@ -127,7 +144,8 @@ set "icolib=%~2"
 if "%icolib%" == "" set "icolib=SHELL32.dll"
 set "pa=%~1"
 (echo.[.ShellClassInfo]
-echo.IconResource=%SystemRoot%\system32\%icolib%,%~3)>"%pa%\desktop.ini"
+echo.IconResource=%SystemRoot%\system32\%icolib%,%~3
+if not "%~4" == "" echo.LocalizedResourceName=%~4)>"%pa%\desktop.ini"
 attrib +r "%pa%"
 attrib +s +h "%pa%\desktop.ini"
 endlocal
