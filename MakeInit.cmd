@@ -144,7 +144,7 @@ set "icolib=%~2"
 if "%icolib%" == "" set "icolib=SHELL32.dll"
 set "pa=%~1"
 (echo.[.ShellClassInfo]
-echo.IconResource=%SystemRoot%\system32\%icolib%,%~3
+echo.IconResource=%%SystemRoot%%\system32\%icolib%,%~3
 if not "%~4" == "" echo.LocalizedResourceName=%~4)>"%pa%\desktop.ini"
 attrib +r "%pa%"
 attrib +s +h "%pa%\desktop.ini"
