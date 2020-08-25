@@ -39,7 +39,7 @@ popd
 :--username--
 md "%CURRENTPC%\%CURRENTUSER%" 2>nul || goto :--desktop--
 pushd "%CURRENTPC%\%CURRENTUSER%"
-call:[WTini] "%CD%" imageres.dll 207 "%USERNAME%"
+call:[WTini] "%CD%" imageres.dll 208 "%USERNAME%"
 setlocal enabledelayedexpansion
 :--username--#loop
 for /f "tokens=1* delims=:" %%i in ("!PRESET!") do (
