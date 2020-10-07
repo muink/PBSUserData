@@ -92,7 +92,7 @@ md "%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft\Windows" 2>nul || goto :--
 pushd "%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft\Windows"
 call:[WTini] "%CD%" "" 69
 setlocal enabledelayedexpansion
-set "KEY=Themes=themeui.dll:0"
+set "KEY=Themes=themeui.dll:0;Fonts=:38"
 :--local2--#loop
 for /f "tokens=1* delims=;" %%i in ("!KEY!") do (
 	for /f "tokens=1,2 delims==" %%k in ("%%i") do call:[MKKEY] "%CD%" "%%~k" "%%~l"
