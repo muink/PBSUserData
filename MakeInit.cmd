@@ -30,6 +30,9 @@ for /f "delims=" %%i in ('whoami /user /fo list 2^>nul') do (
 set "PRESET=Contacts:Desktop:Documents:Downloads:Favorites:Links:Music:Pictures:Saved Games:Searches:Videos"
 
 
+:--icon--
+if not exist desktop.ini call:[WTini] "%cd%" "" "69"
+
 :--pcname--
 md "%CURRENTPC%" 2>nul || goto :--username--
 pushd "%CURRENTPC%"
@@ -137,6 +140,7 @@ setlocal enabledelayedexpansion
 set "icolib=%~2"
 if "%icolib%" == "" set "icolib=SHELL32.dll"
 set "pa=%~1"
+del /f /q /a "%pa%\desktop.ini" 2>nul
 (echo.[.ShellClassInfo]
 echo.IconResource=%%SystemRoot%%\system32\%icolib%,%~3
 if not "%~4" == "" echo.LocalizedResourceName=%~4)>"%pa%\desktop.ini"
