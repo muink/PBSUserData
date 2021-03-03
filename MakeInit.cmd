@@ -35,13 +35,19 @@ set "PRESET=Contacts:Desktop:Documents:Downloads:Favorites:Links:Music:Pictures:
 if not exist desktop.ini call:[WTini] "%cd%" "" "69"
 
 :--pcname--
-md "%CURRENTPC%" 2>nul || goto :--username--
+md "%CURRENTPC%" 2>nul || (
+	call:[WTini] "%CURRENTPC%" "" 15 "%USERDOMAIN%"
+	goto :--template--
+)
 pushd "%CURRENTPC%"
 	call:[WTini] "%CD%" "" 15 "%USERDOMAIN%"
 popd
 
 :--username--
-md "%CURRENTPC%\%CURRENTUSER%" 2>nul || goto :--game--
+md "%CURRENTPC%\%CURRENTUSER%" 2>nul || (
+	call:[WTini] "%CURRENTPC%\%CURRENTUSER%" imageres.dll 208 "%USERNAME%"
+	goto :--game--
+)
 pushd "%CURRENTPC%\%CURRENTUSER%"
 call:[WTini] "%CD%" imageres.dll 208 "%USERNAME%"
 setlocal enabledelayedexpansion
