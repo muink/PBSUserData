@@ -14,6 +14,8 @@ set "LASTDEVICE=%~d0"
 set "LASTDEVFILE=%~dp0%CURRENTPC%\.drv"
 for /f "delims=" %%i in ('type "%LASTDEVFILE%" 2^>nul') do set "LASTDEVICE=%%~i"
 
+::set "MKLINKHIDE=rem"
+set "MKLINKHIDE=attrib"
 set "ERRORLOG=%~dp0%CURRENTPC%\%USERNAME%.Error.log"
 null>"%ERRORLOG%" 2>nul
 set /a ERRORCOUNT=0
@@ -56,15 +58,19 @@ for /f "delims=" %%i in ('dir /a /b') do (
 									mklink /d "%~2\%%~i" "%CD%\%%~i"
 								)
 								if "%%~n" == "SYMLINK" (
-									del /f /q "%~2\%%~i" >nul 2>nul
+									del /f /q /a "%~2\%%~i" >nul 2>nul
 									mklink "%~2\%%~i" "%CD%\%%~i"
 								)
+								%MKLINKHIDE% /l +s +h "%~2\%%~i" 2>nul
 							)
 						) else echo."%~2\%%~i" is linked to another location, Unable to create symlink...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
 					)
 				)
 			) || echo."%~2\%%~i" is exist, Unable to create symlink...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
-		) else dir /ad /b "%%~i" >nul 2>nul && mklink /d "%~2\%%~i" "%CD%\%%~i" || mklink "%~2\%%~i" "%CD%\%%~i"
+		) else (
+			dir /ad /b "%%~i" >nul 2>nul && mklink /d "%~2\%%~i" "%CD%\%%~i" || mklink "%~2\%%~i" "%CD%\%%~i"
+			%MKLINKHIDE% /l +s +h "%~2\%%~i" 2>nul
+		)
 	)
 )
 popd
