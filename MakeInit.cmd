@@ -19,7 +19,7 @@ for /f "delims=" %%i in ('reg query HKLM\SOFTWARE\Microsoft\Cryptography /v Mach
     )
 )
 rem dmi info
-rem wmic csproduct get UUIDs
+rem wmic csproduct get UUID
 for /f "delims=" %%i in ('whoami /user /fo list 2^>nul') do (
     for /f "delims=" %%o in ('echo %%i ^| find /i "SID:"') do (
         for /f "tokens=2 delims= " %%p in ("%%o") do (
