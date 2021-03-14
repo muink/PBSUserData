@@ -46,7 +46,7 @@ popd
 :--username--
 md "%CURRENTPC%\%CURRENTUSER%" 2>nul || (
 	call:[WTini] "%CURRENTPC%\%CURRENTUSER%" imageres.dll 208 "%USERNAME%"
-	goto :--game--
+	goto :--quickaccess--
 )
 pushd "%CURRENTPC%\%CURRENTUSER%"
 call:[WTini] "%CD%" imageres.dll 208 "%USERNAME%"
@@ -58,6 +58,12 @@ for /f "tokens=1* delims=:" %%i in ("!PRESET!") do (
 	goto :--username--#loop
 )
 endlocal
+popd
+
+:--quickaccess--
+md "%CURRENTPC%\%CURRENTUSER%\QuickAccess" 2>nul || goto :--game--
+pushd "%CURRENTPC%\%CURRENTUSER%\QuickAccess"
+call:[WTini] "%CD%" "" 320
 popd
 
 :--game--
