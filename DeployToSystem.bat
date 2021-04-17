@@ -29,7 +29,8 @@ call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\Game\Roaming" "%CURRENTPROFILE%\
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Local" "%CURRENTPROFILE%\AppData\Local" "\<desktop.ini\> \<Microsoft\>"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\LocalLow" "%CURRENTPROFILE%\AppData\LocalLow" "\<desktop.ini\> \<Microsoft\>"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming" "%CURRENTPROFILE%\AppData\Roaming" "\<desktop.ini\> \<Microsoft\>"
-call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Roaming\Microsoft\Windows" "\<desktop.ini\>"
+call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Roaming\Microsoft\Windows" "\<desktop.ini\> \<SendTo\>"
+rem call:[MakeJunction] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Roaming\Microsoft\Windows" "\<desktop.ini\>"
 call:[MakeLink] "%~dp0%CURRENTPC%\%CURRENTUSER%\AppData\Local\Microsoft\Windows" "%CURRENTPROFILE%\AppData\Local\Microsoft\Windows" "\<desktop.ini\>"
 echo.%~d0>"%~dp0%CURRENTPC%\%CURRENTUSER%\.drv"
 
@@ -67,7 +68,7 @@ for /f "delims=" %%i in ('dir /a /b') do (
 						) else echo."%~2\%%~i" is linked to another location, Unable to create symlink...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
 					)
 				)
-			) || echo."%~2\%%~i" is exist, Unable to create symlink...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
+			) || echo."%~2\%%~i" is exist and not a symlink, Unable to create symlink...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
 		) else (
 			dir /ad /b "%%~i" >nul 2>nul && mklink /d "%~2\%%~i" "%CD%\%%~i" || mklink "%~2\%%~i" "%CD%\%%~i"
 			%MKLINKHIDE% /l +s +h "%~2\%%~i" 2>nul
@@ -75,3 +76,29 @@ for /f "delims=" %%i in ('dir /a /b') do (
 	)
 )
 popd
+goto :eof
+
+:[MakeJunction]
+pushd %~1
+for /f "delims=" %%i in ('dir /ad /b') do (
+	echo.%%~i|findstr /i /x /v "%~3" >nul && (
+		if exist "%~2\%%~i" (
+			dir /adl "%~2\%%~i\.." 2>nul|findstr /r /c:"<JUNCTION>  *%%~i " >nul && (
+				for /f "tokens=2 delims=[]" %%l in ('dir /adl "%~2\%%~i\.." 2^>nul^|findstr /r /c:"<JUNCTION>  *%%~i \["^|find "%%~i"') do (
+					if not "%%~l" == "%CD%\%%~i" (
+						if "%%~l" == "%LASTDEVICE%%~pn1\%%~i" (
+							rd /q "%~2\%%~i" >nul 2>nul
+							mklink /j "%~2\%%~i" "%CD%\%%~i"
+							%MKLINKHIDE% /l +s +h "%~2\%%~i" 2>nul
+						) else echo."%~2\%%~i" is linked to another location, Unable to create junction...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
+					)
+				)
+			) || echo."%~2\%%~i" is exist and not a junction, Unable to create junction...>>"%ERRORLOG%" && set /a ERRORCOUNT+=1
+		) else (
+			mklink /j "%~2\%%~i" "%CD%\%%~i"
+			%MKLINKHIDE% /l +s +h "%~2\%%~i" 2>nul
+		)
+	)
+)
+popd
+goto :eof

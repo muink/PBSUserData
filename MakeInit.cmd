@@ -128,7 +128,7 @@ md "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows" 2>nul || goto :
 pushd "%CURRENTPC%\%CURRENTUSER%\AppData\Roaming\Microsoft\Windows"
 call:[WTini] "%CD%" "" 69
 setlocal enabledelayedexpansion
-set "KEY=Network Shortcuts=imageres.dll:28;Printer Shortcuts=imageres.dll:48;SendTo=imageres.dll:176;Themes=themeui.dll:0"
+set "KEY=Network Shortcuts=imageres.dll:28;Printer Shortcuts=imageres.dll:48;SendTo=imageres.dll:225;Themes=themeui.dll:0"
 :--roaming2--#loop
 for /f "tokens=1* delims=;" %%i in ("!KEY!") do (
 	for /f "tokens=1,2 delims==" %%k in ("%%i") do call:[MKKEY] "%CD%" "%%~k" "%%~l"
@@ -168,8 +168,9 @@ set "pa=%~1\%~2"
 set "key=%~2"
 set "value=%~3"
 set "value2=%value::=" "%"
-if "%value%" == "%value2%" set value2=" "%value%
 md "%pa%" 2>nul
+if "%value%" == "null" goto :eof
+if "%value%" == "%value2%" set value2=" "%value%
 call:[WTini] "%pa%" "%value2%"
 endlocal
 goto :eof
